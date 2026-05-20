@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import { Layout } from '../components/Layout.jsx'
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { routes_auth, routes_private, routes_public } from './routes.js'
+import { routes_auth, routes_private, routes_public } from './routes.jsx'
 import { SpinnerLoading } from '../components/SpinnerLoading.jsx'
 import { PATH_ROUTES } from '../common/const/pauthRoute-const.js'
 import { RedirectIfAuthenticated, ProtectedRoute } from './Protected.routes.jsx'

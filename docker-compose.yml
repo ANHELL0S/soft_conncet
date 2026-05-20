@@ -1,0 +1,48 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: soft-connect-postgres
+    restart: unless-stopped
+    env_file:
+      - ./server/.env.production
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - '5436:5432'
+    volumes:
+      - postgres_data_soft_connect:/var/lib/postgresql/data
+    healthcheck:
+      test: 'pg_isready -U $$DB_USER -d $$DB_NAME'
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  server:
+    build:
+      context: ./server
+    container_name: soft-connect-server
+    restart: unless-stopped
+    env_file:
+      - ./server/.env.production
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - '3000:3000'
+
+  client:
+    build:
+      context: ./client
+    container_name: soft-connect-client
+    restart: unless-stopped
+    depends_on:
+      - server
+    ports:
+      - '5173:80'
+
+volumes:
+  postgres_data_soft_connect:
